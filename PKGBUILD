@@ -1,5 +1,6 @@
 pkgname=headscale
-pkgver=0.16.4
+pkgver=0.17.0alpha4
+_pkgver="0.17.0-alpha4"
 pkgrel=1
 pkgdesc="An open source, self-hosted implementation of the Tailscale coordination server."
 arch=('any')
@@ -15,24 +16,24 @@ conflicts=("${pkgname}-git")
 backup=("etc/${pkgname}/config.yaml" "etc/${pkgname}/derp.yaml")
 
 source=(
-	"${pkgname}-${pkgver}.tar.gz::https://github.com/juanfont/headscale/archive/refs/tags/v${pkgver}.tar.gz"
+	"${pkgname}-${_pkgver}.tar.gz::https://github.com/juanfont/headscale/archive/refs/tags/v${_pkgver}.tar.gz"
 	'headscale.service'
 	'headscale.sysusers'
 	'headscale.tmpfiles'
 )
-sha256sums=('0395478f9dde68aa8ca23be8df6ff636d47166981d0995e4e31a8c7db12df8e8'
+sha256sums=('9ef12ffd4884acf3708bb9947cb5e896128c2a8b113cf35f8f9d78734dbd0975'
             'SKIP'
             'SKIP'
             'SKIP')
 
 build() {
-	cd "${srcdir}/${pkgname}-${pkgver}"
-	make
+	cd "${srcdir}/${pkgname}-${_pkgver}"
+	version="v$_pkgver" make
 	sed -i 's-/var/run/headscale\.sock-/var/run/headscale/headscale\.sock-' config-example.yaml
 }
 
 package() {
-	cd "$srcdir/${pkgname}-${pkgver}"
+	cd "$srcdir/${pkgname}-${_pkgver}"
 	install -D -m755 "${pkgname}" "${pkgdir}/usr/bin/${pkgname}"
 
 	install -D -m644 "config-example.yaml" "${pkgdir}/etc/${pkgname}/config.yaml"
